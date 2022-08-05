@@ -51,5 +51,6 @@ public:
             if (++i >= bracket.size() / 2 * 2)
                 i = 0;
         }
+        cout << bracket[0]->getName() << " winner" << endl;
     }
 };
