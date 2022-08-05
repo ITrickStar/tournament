@@ -9,6 +9,7 @@ class Unit
 protected:
     string m_name;
     int m_hp;
+    int curr_hp;
     int m_dmg;
 
     int calcDmg() const
@@ -17,17 +18,20 @@ protected:
     }
 
 public:
-    void setName(char *set) { m_name = strcat(set, (char *)this); }
-    int getHP() const { return m_hp; }
-    void setHP(const int set) { m_hp = set; }
+    void setName(string set) { m_name = set + (string)(char*)this; }
+    int getHP() const { return curr_hp; }
+    void setHP(const int set) { curr_hp = set; }
+    void resetHP() { curr_hp = m_hp; cout << m_name << " wins"; }
     void setDmg(const int set) { m_dmg = set; }
-    virtual void hit(Unit *target) { target->receiveDmg(calcDmg()); }
-    virtual bool receiveDmg(int dmg)
+    virtual void hit(Unit *target)
     {
-        m_hp -= dmg;
-        if (m_hp <= 0)
-            return false;
-        return true;
+        if (this == target)
+            return;
+        target->receiveDmg(calcDmg());
+    }
+    virtual void receiveDmg(int dmg)
+    {
+        curr_hp -= dmg;
     }
 };
 
@@ -37,19 +41,16 @@ private:
     int evasion = 10;
 
 public:
-    Archer()
+    Archer(int hp = 80, int dmg = 15)
     {
         setName("archer");
-        setHP(80);
+        setHP(hp);
         setDmg(15);
     }
-    virtual bool receiveDmg(int dmg) override
+    virtual void receiveDmg(int dmg) override
     {
         if ((rand() % 100 + 1) / evasion)
-            m_hp -= dmg;
-        if (m_hp <= 0)
-            return false;
-        return true;
+            curr_hp -= dmg;
     }
 };
 class Warrior : public Unit
@@ -65,12 +66,9 @@ public:
         setDmg(15);
     }
 
-    virtual bool receiveDmg(int dmg) override
+    virtual void receiveDmg(int dmg) override
     {
-        m_hp -= dmg * (100. - resist) / 100;
-        if (m_hp <= 0)
-            return false;
-        return true;
+        curr_hp -= dmg * (100. - resist) / 100;
     }
 };
 
@@ -115,13 +113,13 @@ public:
 struct Entities
 {
     size_t plcount = 4;
-    vector<Unit *> *competitors;
+    vector<Unit *> competitors;
 
     Entities()
     {
-        competitors->push_back(new Warrior());
-        competitors->push_back(new Archer());
-        competitors->push_back(new Rogue());
-        competitors->push_back(new Wizard());
+        competitors.push_back(new Warrior());
+        competitors.push_back(new Archer());
+        competitors.push_back(new Rogue());
+        competitors.push_back(new Wizard());
     }
 };
