@@ -9,6 +9,6 @@ auto main() -> int
 {
     srand(time(0));
 
-    Tournament tarr(4);
+    Tournament tarr;
     tarr.clash();
 }

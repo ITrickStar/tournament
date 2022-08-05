@@ -18,10 +18,21 @@ protected:
     }
 
 public:
-    void setName(string set) { m_name = set + (string)(char*)this; }
+    Unit(int hp = 80, int dmg = 15)
+    {
+        setHP(hp);
+        setDmg(dmg);
+    }
+
+    string getName() const { return m_name; }
+    void setName(string set) { m_name = set + (string)(char *)this; }
     int getHP() const { return curr_hp; }
     void setHP(const int set) { curr_hp = set; }
-    void resetHP() { curr_hp = m_hp; cout << m_name << " wins"; }
+    void resetHP()
+    {
+        curr_hp = m_hp;
+        cout << m_name << " wins" << endl;
+    }
     void setDmg(const int set) { m_dmg = set; }
     virtual void hit(Unit *target)
     {
@@ -41,11 +52,9 @@ private:
     int evasion = 10;
 
 public:
-    Archer(int hp = 80, int dmg = 15)
+    Archer() : Unit(60, 15)
     {
         setName("archer");
-        setHP(hp);
-        setDmg(15);
     }
     virtual void receiveDmg(int dmg) override
     {
@@ -59,11 +68,9 @@ private:
     int resist = 15;
 
 public:
-    Warrior()
+    Warrior() : Unit()
     {
         setName("warrior");
-        setHP(80);
-        setDmg(15);
     }
 
     virtual void receiveDmg(int dmg) override
@@ -78,11 +85,9 @@ private:
     int crit = 20;
 
 public:
-    Rogue()
+    Rogue() : Unit(60, 15)
     {
         setName("rogue");
-        setHP(80);
-        setDmg(15);
     }
 
     virtual void hit(Unit *target) override
@@ -94,19 +99,12 @@ public:
     }
 };
 
-class Wizard : public Unit
+class Peasant : public Unit
 {
 public:
-    Wizard()
+    Peasant() : Unit()
     {
-        setName("wizard");
-        setHP(80);
-        setDmg(15);
-    }
-
-    virtual void hit(Unit *target) override
-    {
-        target->receiveDmg(calcDmg());
+        setName("peasant");
     }
 };
 
@@ -120,6 +118,12 @@ struct Entities
         competitors.push_back(new Warrior());
         competitors.push_back(new Archer());
         competitors.push_back(new Rogue());
-        competitors.push_back(new Wizard());
+        competitors.push_back(new Peasant());
+    }
+
+    void erase(int num)
+    {
+        competitors.erase(competitors.begin() + num);
+        plcount--;
     }
 };

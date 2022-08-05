@@ -7,7 +7,20 @@ private:
     vector<Unit *> bracket;
 
 public:
-    Tournament(size_t num = 4) : player_count(num)
+    Tournament() 
+    {
+        Entities array;
+        player_count = array.plcount;
+        int key;
+        for (int i = 0; i < player_count; i++)
+        {
+            key = rand() % array.plcount;
+            bracket.push_back(array.competitors[key]);
+            array.erase(key);
+        }
+    }
+
+    Tournament(size_t num) : player_count(num)
     {
         Entities array;
         for (int i = 0; i < player_count; i++)
@@ -18,6 +31,7 @@ public:
         int i = 0;
         while (bracket.size() > 1)
         {
+            cout << bracket[i]->getName() << " vs " << bracket[i + 1]->getName() << " -> ";
             while (bracket[i]->getHP() > 0 && bracket[i + 1]->getHP() > 0)
             {
                 bracket[i]->hit(bracket[i + 1]);
@@ -33,8 +47,8 @@ public:
                 bracket[i + 1]->resetHP();
                 bracket.erase(bracket.begin() + i);
             }
-            i += 2;
-            if (i >= bracket.size() / 2 * 2)
+
+            if (++i >= bracket.size() / 2 * 2)
                 i = 0;
         }
     }
